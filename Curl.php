@@ -13,12 +13,14 @@ class Curl{
      * @author:wkj
      * @date  2017/6/1 14:48
      * @param       $url      请求地址
+     * @param array $params   请求参数
      * @param array $headers  请求头
      * @param int   $timeOut  超时时间
      * @param bool  $isFollow 302跳转跟随
      * @return bool|mixed
      */
-    public static function get($url, $headers = array(), $timeOut = 10, $isFollow = false){
+    public static function get($url, $params = array(), $headers = array(), $timeOut = 10, $isFollow = false){
+        $url = self::buildUrl($url, $params);
         $ch = curl_init();
         if (stripos($url, "https://") !== false) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -106,5 +108,25 @@ class Curl{
         }
 
         return false;
+    }
+
+    /**
+     *  get请求针对接口json数据处理为数组
+     * @author:wkj
+     * @date  2017/6/1 14:49
+     * @param       $url     请求地址
+     * @param array $params  请求参数数组格式
+     * @return string
+     */
+    public static function buildUrl($url, array $params = array()){
+        $paramsStr = '';
+        if (strpos($url, '?') === false) {
+            $paramsStr .= '?';
+        } else {
+            $paramsStr .= '&';
+        }
+        $paramsStr .= http_build_query($params);
+
+        return rtrim($url . $paramsStr, '&');
     }
 }
