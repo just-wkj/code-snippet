@@ -97,12 +97,13 @@ class Curl{
      * @author:wkj
      * @date  2017/6/1 14:49
      * @param       $url     请求地址
+     * @param array $params  请求参数
      * @param int   $timeOut 超时时间
      * @param array $headers 请求头
      * @return bool|mixed
      */
-    public static function getArray($url, $timeOut = 10, $headers = array()){
-        $result = self::get($url, $timeOut, $headers);
+    public static function getArray($url, $params = array(), $timeOut = 10, $headers = array()){
+        $result = self::get($url, $params, $timeOut, $headers);
         if ($result) {
             return json_decode($result, true);
         }
