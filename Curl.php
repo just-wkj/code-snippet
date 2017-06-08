@@ -102,8 +102,8 @@ class Curl{
      * @param array $headers 请求头
      * @return bool|mixed
      */
-    public static function getArray($url, $params = array(), $timeOut = 10, $headers = array()){
-        $result = self::get($url, $params, $timeOut, $headers);
+    public static function getArray($url, $params = array(), $headers = array(), $timeOut = 10){
+        $result = self::get($url, $params, $headers, $timeOut);
         if ($result) {
             return json_decode($result, true);
         }
