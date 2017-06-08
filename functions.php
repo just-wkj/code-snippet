@@ -144,11 +144,19 @@ function iconv_to_gbk($str){
  * @param string $type
  */
 function writeLog($log, $type = 'sql'){
-    $filename = './' . date("Ymd") . '_' . $type . ".log";
-    @$handle = fopen($filename, "a+");
-    @fwrite($handle, date('Y-m-d H:i:s') . "  " . $log . "\r\n");
-    @fclose($handle);
-}
+        $path = './log/';
+        if (!is_dir($path) && !mkdir($path, 0755, true)) {
+            //无权创建文件忽略函数
+            return false;
+        }
+        if (is_array($log)) {
+            $log = json_encode($log);
+        }
+        $filename = $path . date("Ymd") . '_' . $type . ".log";
+        @$handle = fopen($filename, "a+");
+        @fwrite($handle, date('Y-m-d H:i:s') . "  " . $log . "\r\n");
+        @fclose($handle);
+    }
 
 /**
  *  判断是否是utf-8
