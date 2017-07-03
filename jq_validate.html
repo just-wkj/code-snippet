@@ -1,0 +1,371 @@
+<link rel="stylesheet" type="text/css" href="/static/css/admin_new/gds.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/yf_mine.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/admin/global.css"/>
+<script src="/static/js/jquery.cityselect.js" type="text/javascript"></script>
+<script src="<?=base_url()?>static/js/ajaxfileupload.js"></script>
+<script src="/static/js/jquery.validate.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	//省市联动默认选中江苏南京
+	$(function(){
+		$("#myform").validate();
+		$("#city_1").citySelect({
+			prov:'江苏', 
+			city:'南京'
+		});
+	});
+$(document).ready(function(){
+    $("#addCompanyForm").validate({
+        rules: {
+            companyname:{
+                required: true,
+            },
+			companyid:{
+				required:true,
+			},
+			corporation:{
+				required:true,
+				maxlength:20,
+			},
+			linkman:{
+				required:true,
+				maxlength:20,
+			},
+			corporationmobile:{
+				phone:true,
+			},
+			linkmanphonemobile:{
+				phone:true,
+			},
+			accountname:{
+				required:true,	
+			},
+			accounted:{
+				required:true,
+				number:true,
+			},
+			
+        },
+        messages:{
+            companyname:{
+                required: "公司名称为必填项",
+            },
+			companyid:{
+				required:"公司简称为必填项",
+			},
+			corporation:{
+				required:'法人为必填项',
+				maxlength:'公司联系人不超过20字符',
+			},
+			linkman:{
+				required:'公司联系人为必填项',
+				maxlength:'公司联系人不超过20字符',
+			},
+			corporationmobile:{
+				phone:'法人手机号码有误',
+			},
+			linkmanphonemobile:{
+				phone:'联系人手机号码有误',
+			},
+			accountname:{
+				required:'账户名为必填项',	
+			},
+			accounted:{
+				required:'银行账户为必填项',
+				number:'请输入正确的银行账户',
+			},
+			
+        },
+		onkeyup:false,
+		errorPlacement: function (error, element) {
+           alert(error.html());
+			//var p = $("<p />").append(error);
+			//p.appendTo(element.parent());
+        },
+    });
+	//自定义设置规则
+	$.validator.addMethod(
+		'phone',
+		function(value,element){
+			var length = value.length;
+			var pattern = /^1[34578]\d{9}$/;
+			return this.optional(element) || (length == 11 && pattern.test(value));
+		},
+		'手机号码有误'
+	);
+	$.validator.addMethod(
+		'repayDate',
+		function(value,element){
+			var status = false
+			if(!isNaN(value)){
+				if(value>=1&&value<=31){
+					if(!/^(.+?)\..+$/.test(value)){
+						status = true
+					}	
+				}
+			}
+			return this.optional(element) || status;
+		},
+		'还款日有误'
+	);
+
+	/////////////////////////////////////////////
+	//监听上传
+	$(document).on('change','#agreement',function(){
+		var ag_num=$("input[name='agreement[]']").length;
+		if(ag_num>3){
+			alert('最多只能上传四份文件')
+			return false;
+		}
+		$.ajaxFileUpload
+		(
+			{
+				url: "<?php echo base_url('admin/company/upload')?>", //用于文件上传的服务器端请求地址
+				secureuri: false, //是否需要安全协议，一般设置为false
+				fileElementId: 'agreement', //文件上传域的ID
+				dataType: 'json', //返回值类型 一般设置为json
+				success: function (data, status)  //服务器成功响应处理函数
+				{
+					alert('上传成功')
+					$('.zfhtadd').before('<div style="background: url('+data.imgurl+') no-repeat; background-size: 91px 91px;" class="fleft img_box_change img_box"><input type="hidden" name="agreement[]" value="'+data.imgurl+'"><div class="close click" onclick="$(this).parent().remove()"></div></div>')
+				},
+				error: function (data, status, e)//服务器响应失败处理函数
+				{
+					alert(e);
+				}
+			}
+		)	
+		return false;
+		
+	})
+	$(document).on('change','#agreement_imgs',function(){
+		var ag_num=$("input[name='agreement_imgs[]']").length;
+		if(ag_num>3){
+			alert('最多只能上传四份文件')
+			return false;
+		}
+		$.ajaxFileUpload
+		(
+			{
+				url: "<?php echo base_url('admin/company/upload')?>", //用于文件上传的服务器端请求地址
+				secureuri: false, //是否需要安全协议，一般设置为false
+				fileElementId: 'agreement_imgs', //文件上传域的ID
+				dataType: 'json', //返回值类型 一般设置为json
+				success: function (data, status)  //服务器成功响应处理函数
+				{
+					alert('上传成功')
+					$('.fqxyadd').before('<div style="background: url('+data.imgurl+') no-repeat; background-size: 91px 91px;" class="fleft img_box_change img_box"><input type="hidden" name="agreement_imgs[]" value="'+data.imgurl+'"><div class="close click" onclick="$(this).parent().remove()"></div></div>')
+				},
+				error: function (data, status, e)//服务器响应失败处理函数
+				{
+					alert(e);
+				}
+			}
+		)	
+		return false;
+	})
+	
+	//提交判断
+	$("#addCompanyForm").submit(function(e){
+		//检测有没有上传图片
+		e.preventDefault();
+	})
+
+});
+</script>
+<style>
+	#addCompanyForm .btn-fx{margin-left:30px;width:75px;height: 26px; border: none;border-radius: 3px;background-color: #5ecbec; color: #ffffff;}
+	.none{display:none}
+</style>
+</head>
+<body>
+<div class="content">
+	<div class="tittle">
+		<span>新增公司</span>
+	</div>
+	<div class="cont fleft mendian">
+		<form  action="<?php echo base_url('admin/company/do_add_company')?>" method="post"  onsubmit="return check()" id="addCompanyForm">
+			<div class="fleft input_cont width_96_b">
+				<div class="fleft lab"><span class="bt">*</span>公司名称:</div>
+				<div class="fleft val">
+					<input type="text" id='companyname' name="companyname" value='' />
+				</div>
+			</div>
+			<div class="fleft input_cont width_96_b mtop10">
+				<div class="fleft lab"><span class="bt">*</span>公司简称:</div>
+				<div class="fleft val">
+					<input type="text" id="companyid" name="companyid" value='' />
+				</div>
+			</div>
+			<div class="fleft input_cont width_96_b mtop10">
+				<div class="fleft lab"><span class="bt">*</span>法人代表:</div>
+				<div class="fleft val">
+					<input type="text" id="corporation" name="corporation" value='' />
+				</div>
+			</div>
+			<div class="fleft input_cont width_96_b mtop10">
+				<div class="fleft lab"><span class="bt"></span>&nbsp;法人电话:</div>
+				<div class="fleft val">
+					<input type="text" id="corporationphone_area" name="corporationphone[area]" value='' placeholder='区号' style="width:45px" />-
+					<input type="text" id="corporationphone_fix" name="corporationphone[fix]" value='' placeholder='固话' style="width:85px" />-
+					<input type="text" id="corporationphone_extension" name="corporationphone[extension]" value='' placeholder='分机'style="width:60px" />
+					或者
+					<input type="text" id="corporationmobile" name="corporationmobile" value='' placeholder='手机号码'style="width:100px" />
+					<p id="corporationphone_area_msg" class="msg"></p>
+					<p id="corporationphone_fix_msg" class="msg"></p>
+					<p id="corporationphone_extension_msg" class="msg"></p>
+					<p id="corporationmobile_msg" class="msg"></p>
+				</div>
+			</div>
+			<div class="fleft input_cont width_96_b mtop10">
+				<div class="fleft lab"><span class="bt">*</span>公司联系人:</div>
+				<div class="fleft val">
+					<input type="text" id="linkman" name="linkman" value='' />
+				</div>
+			</div>
+			<div class="fleft input_cont width_96_b mtop10">
+				<div class="fleft lab"><span class="bt">*</span>联系人电话:</div>
+				<input type="text" id="linkmanphone_area" name="linkmanphone[area]" value='' placeholder='区号' style="width:45px" />-
+				<input type="text" id="linkmanphone_fix" name="linkmanphone[fix]" value='' placeholder='固话' style="width:85px" />-
+				<input type="text" id="linkmanphone_extension" name="linkmanphone[extension]" value='' placeholder='分机'style="width:60px" />
+				或者
+				<input type="text" id="linkmanphonemobile" name="linkmanphonemobile" value='' placeholder='手机号码'style="width:100px" />
+				<p id="linkmanphone_area_msg" class="msg"></p>
+				<p id="linkmanphone_fix_msg" class="msg"></p>
+				<p id="linkmanphone_extension_msg" class="msg"></p>
+				<p id="linkmanphonemobile_msg" class="msg"></p>
+			</div>
+			<div class="fleft input_cont width_96_b mtop10">
+				<div class="fleft lab"><span class="bt">*</span>开户银行:</div>
+				<div class="fleft val">
+					<select name="bankname" id="">
+						<?php foreach($this->config->item('banks') as $key=>$vo){
+							echo "<option value='$key'>$vo</option>";
+						}?>
+					</select>
+				</div>
+			</div>
+			<div class="fleft input_cont width_96_b mtop10">
+				<div class="fleft lab"><span class="bt">*</span>开户名:</div>
+				<div class="fleft val">
+					<input type="text" id="accountname" name="accountname" value='' />
+				</div>
+			</div>
+			<div class="fleft input_cont width_96_b mtop10">
+				<div class="fleft lab"><span class="bt">*</span>银行账户:</div>
+				<div class="fleft val">
+					<input type="text" id="accounted" name="accounted" value='' />
+				</div>
+			</div>
+			<div class="fleft input_cont width_96_b mtop10">
+				<div class="fleft nav_img" >
+					<div class="other_number fleft license"><span class="bt">*</span>营业执照&nbsp;&nbsp;:</div>
+					<input type="file" id="license" name="license" value='' class='none' />
+					<input type='button'  value='上传文件' class='btn-fx'  onclick='license.click()'/>
+					
+				</div>
+			</div>
+			<div class="fleft input_cont width_96_b mtop10">
+				<div class="fleft nav_img" >
+					<div class="other_number fleft otherlicense"><span class="bt">*</span>其他证照&nbsp;&nbsp;:</div>
+					<input type="file"  id="otherlicense" name="otherlicense"  value='' class='none' />
+					<input type='button'  value='上传文件' class='btn-fx'  onclick='otherlicense.click()'/>
+				</div>
+			</div>
+			<div class="fleft input_cont width_96_b mtop10">
+				<div class="fleft nav_img" >
+					<div class="other_number fleft cooperation"><span class="bt">*</span>合作协议&nbsp;&nbsp;:</div>
+					<input type="file" id="cooperation" name="cooperation"  value='' class='none' />
+					<input type='button'  value='上传文件' class='btn-fx'  onclick='cooperation.click()'/>
+				</div>
+			</div>
+
+
+
+
+
+
+
+
+
+
+			
+			<div class="fleft textarea_cont width_96_b mtop10">
+				<div class="fleft val">
+					<input type="submit" id='sub' class="btn-a common_button_big" style="margin-left: 100px;" value="提 交">
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+	<script type="text/javascript">
+		$(function(){
+			$("#storename").change(function(){
+				var storename = $(this).val();
+				$.ajax({
+					url: "<?php echo base_url('admin/store/checkstorename')?>",
+					type: 'POST',
+					data: {'storename':storename,'cid':$("#cid").val()},
+					dataType: "json",
+					success: function(msg){
+						if(msg.result){
+							alert(msg.msg);
+							return false;
+						}else{
+						}
+					}
+				})
+			})
+		})
+
+		$("#mobile").focus(function(){
+			$("#mobile_msg").text("")
+		})
+		$("#phone_area").focus(function(){
+			$("#mobile_msg").text("")
+		})
+		$("#phone_fix").focus(function(){
+			$("#mobile_msg").text("")
+		})
+		$("#phone_extention").focus(function(){
+			$("#mobile_msg").text("")
+		})
+		function check(){
+			if($("#mobile").val()==''&& $("#phone_fix").val()==''){
+				$("#mobile_msg").text("店长联系电话为必填项");
+				return false;
+			}else{
+				var mobile = $("#mobile").val();
+				if(mobile){
+					if(!(/^1[34578]\d{9}$/.test(mobile))){
+						$("#mobile_msg").text("请输入11位手机号码");
+						alert('请输入11位手机号码');
+						return false;
+					}
+				}
+				var phone_area = $("#phone_area").val();
+				if(phone_area){
+					if(!/^\d{0,4}$/.test(phone_area)){
+						$("#mobile_msg").text("区号不正确")
+						return false;
+					}
+				}
+				var phone_fix = $("#phone_fix").val();
+				if(phone_fix){
+					if(!/^\d{6,8}$/.test(phone_fix)){
+						$("#mobile_msg").text("请输入6-8位固话号码");
+						return false;
+					}
+				}
+				var phone_extension = $("#phone_extension").val();
+				if(phone_extension){
+					if(!/^\d{0,6}$/.test(phone_extension)){
+						$("#mobile_msg").text("请输入小于7位数的分机号码");
+						return false;
+					}
+				}
+			}
+		}
+
+	</script>
+</body>
+</html>

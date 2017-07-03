@@ -13,3 +13,5 @@
 - wechat [wechat](http://git.moyixi.cn/wangkeji/code-snippet/src/master/wechat) (未获得网页授权)订阅号获取用户信息可以通过交互->openid->用户管理拉取资料
 - CURL工具类 [CURL](http://git.moyixi.cn/wangkeji/code-snippet/src/master/Curl.php)
 - 简单的打开关闭hosts [hosts](http://git.moyixi.cn/wangkeji/code-snippet/src/master/editHosts.php)
+- jquery validate 校验使用 [jquery-validate](http://git.moyixi.cn/wangkeji/code-snippet/src/master/jq_validate.html)
+
