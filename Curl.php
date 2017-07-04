@@ -84,6 +84,11 @@ class Curl{
             }
             curl_setopt($ch, CURLOPT_HTTPHEADER, $_header);
         }
+        if (stripos($url, "https://") !== false) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_SSLVERSION, 1);
+        }
         if (!$result = curl_exec($ch)) {
             trigger_error(curl_error($ch));
         }
