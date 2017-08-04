@@ -1,11 +1,19 @@
 <?php
-//微信分享测试
-//微信文档 https://mp.weixin.qq.com/wiki?t=resource/res_main
-define('APP_ID', 'wx8f0751f23e17069a');
-define('APP_SECRECT', 'f2076913c6fb0a418ab7d3bdf438e823');
+/**
+ * @author     :wkj
+ * @createTime :2017/8/4 9:47
+ * @description:微信分享测试
+ * 微信文档 https://mp.weixin.qq.com/wiki?t=resource/res_main
+ * 缓存 access_token 和 jsapi_ticket 每日限制2000次需要缓存下来两小时之内即可 此处以redis为例子
+ * 仅示例分享到朋友圈(onMenuShareTimeline)和分享到朋友(onMenuShareAppMessage)
+ */
+define('APP_ID', 'YOUR_APP_ID');
+define('APP_SECRECT', 'YOUR_APP_SECRECT');
+
+//缓存 access_token 和 jsapi_ticket 每日限制2000次需要缓存下来两小时之内即可 此处以redis为例子
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
-$redis->auth('wkj');
+$redis->auth('YOUR_REDIS_KEY');
 
 if (!function_exists('curlGet')) {
     /**
@@ -108,7 +116,7 @@ echo "</pre>";
 <script>
     wx.config({
         debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-        appId: 'wx8f0751f23e17069a', // 必填，公众号的唯一标识
+        appId: "<?php echo APP_ID;?>", // 必填，公众号的唯一标识
         timestamp: <?php echo $rs['timestamp']?>, // 必填，生成签名的时间戳
         nonceStr: "<?php echo $rs['noncestr']?>", // 必填，生成签名的随机串
         signature: "<?php echo $rs['signature']?>",// 必填，签名，见附录1
