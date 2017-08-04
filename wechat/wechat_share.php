@@ -6,9 +6,12 @@
  * 微信文档 https://mp.weixin.qq.com/wiki?t=resource/res_main
  * 缓存 access_token 和 jsapi_ticket 每日限制2000次需要缓存下来两小时之内即可 此处以redis为例子
  * 仅示例分享到朋友圈(onMenuShareTimeline)和分享到朋友(onMenuShareAppMessage)
+ * 每个分享的域名link 必须是公共号配置的域名一致,否则分享出去不会有标题,内容等
+ *
  */
 define('APP_ID', 'YOUR_APP_ID');
 define('APP_SECRECT', 'YOUR_APP_SECRECT');
+define('DOMAIN','http://blog.moyixi.cn');//域名设置
 
 //缓存 access_token 和 jsapi_ticket 每日限制2000次需要缓存下来两小时之内即可 此处以redis为例子
 $redis = new Redis();
@@ -87,7 +90,7 @@ function getSignature(){
     $noncestr = 'a' . rand(100000, 9999999);
     $jsapi_ticket = $ticket;
     $timestamp = time();
-    $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+    $url = DOMAIN. $_SERVER['REQUEST_URI'];
     $arr = array(
         'noncestr'     => $noncestr,
         'jsapi_ticket' => $jsapi_ticket,
@@ -123,29 +126,32 @@ echo "</pre>";
         jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
     });
 
-    wx.onMenuShareTimeline({
-        title: '测试', // 分享标题
-        link: 'https://blog.moyixi.cn/test.php', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        imgUrl: 'https://aizuna.house365.com/upload_wx_images/2017/07/16/5277c33097006330074665744427e417.jpg', // 分享图标
-        success: function () {
-            // 用户确认分享后执行的回调函数
-        },
-        cancel: function () {
-            // 用户取消分享后执行的回调函数
-        }
-    });
-    wx.onMenuShareAppMessage({
-        title: '测试', // 分享标题
-        desc: '测试描述', // 分享描述
-        link: 'https://blog.moyixi.cn/test.php', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        imgUrl: 'https://aizuna.house365.com/upload_wx_images/2017/07/16/5277c33097006330074665744427e417.jpg', // 分享图标
-        type: '', // 分享类型,music、video或link，不填默认为link
-        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-        success: function () {
-            // 用户确认分享后执行的回调函数
-        },
-        cancel: function () {
-            // 用户取消分享后执行的回调函数
-        }
-    });
+    wx.ready(function(){
+        wx.onMenuShareTimeline({
+            title: '测试', // 分享标题
+            link: 'https://blog.moyixi.cn/test.php', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl: 'https://aizuna.house365.com/upload_wx_images/2017/07/16/5277c33097006330074665744427e417.jpg', // 分享图标
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+        wx.onMenuShareAppMessage({
+            title: '测试', // 分享标题
+            desc: '测试描述', // 分享描述
+            link: 'https://blog.moyixi.cn/test.php', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl: 'https://aizuna.house365.com/upload_wx_images/2017/07/16/5277c33097006330074665744427e417.jpg', // 分享图标
+            type: '', // 分享类型,music、video或link，不填默认为link
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+    })
+
 </script>
