@@ -1,0 +1,34 @@
+部分命令记录,方便查找
+
+awk
+awk 'BEGIN{print "array("}{printf "\"%s\" => \"%s\",\n", $1,$10}END{print")"}' awk.txt
+awk -v FS="@@" -v OFS='##' '{print $1,$2}' log.txt
+awk -v FS='"' '{print $8}' 123.log  > ip.txt
+awk -v FS='"' '{print $8}' 123.log  | sort $1|uniq
+
+grep
+查询当前目录以及子目录下所有文件包含某个字符串
+grep -r string ./*
+grep sendCode xxx.txt > 123.log
+
+
+bash alias
+cat ~/.bashrc
+alias host='cd /c/Windows/System32/drivers/etc;ls host*'
+alias hosts='vim /c/Windows/System32/drivers/etc/hosts'
+alias rep='cd /d/gitrepo'
+alias grep='grep --color=auto'
+alias npmmv='npm run build && php mv.php'
+alias aznLog="awk -v FS='###' -v OFS='\n' '{print \$1,\$3,\$11,\$10,\$13,\$14,\"\n\"}' > out.txt"
+
+
+uniq 去重
+sort -r 倒序
+
+jq
+查看文件 json格式化
+tail -n 2 20170920_upload.log| head -n 2 |awk -v FS='\t' '{print $2}' | jq
+
+curl
+下载文件
+curl -O https://aznapi.house365.com/Application/ApiLog/$(date +%Y%m%d%H).log
