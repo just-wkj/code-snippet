@@ -15,5 +15,6 @@
 - CURL工具类 [CURL](http://git.moyixi.cn/wangkeji/code-snippet/src/master/Curl.php)
 - 简单的打开关闭hosts [hosts](http://git.moyixi.cn/wangkeji/code-snippet/src/master/editHosts.php)
 - jquery validate 校验使用 [jquery-validate](http://git.moyixi.cn/wangkeji/code-snippet/src/master/jq_validate.html)
+- 工作日计算 [工作日计算](http://git.moyixi.cn/wangkeji/code-snippet/src/master/workDayCalc.php)
 
 
