@@ -1,0 +1,1 @@
+/bin/mysqldump -uusername -ppasspord -B dbname > typecho_$(date "+%F" -d -1day).sql

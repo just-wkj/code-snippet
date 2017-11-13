@@ -357,3 +357,51 @@ function checkChinese($username){
 
     return true;
 }
+
+/**
+ *  文本输出换行替换为br标签
+ * @author:wkj
+ * @date 2017/8/30 14:31
+ * @param $str
+ * @return mixed
+ */
+function nlToBr($str){
+    return preg_replace('/\\\\n|\n/', '<br>', $str);
+}
+
+
+/**
+ *  过滤字符串
+ * @author:wkj
+ * @date  2017/9/14 14:15
+ * @param        $str
+ * @param int    $type 0 过滤的字符>=0, 1 过滤的字符>=1,-1 过滤的字符为整数
+ * @param string $returnType
+ * @return array|string  string 字符串  array 数组
+ */
+function filterStr($str, $type = 1, $returnType = 'string'){
+    if(!is_string($str)){
+        return $returnType == 'string' ? '': array();
+    }
+    $arr = explode(',', $str);
+    $result = array_filter($arr, function ($num) use ($type){
+        if ($type == 1) {//所有数值>=1
+            $pattern = '/^[1-9](?:\d+)?$/';
+            $compare = $num >= 1;
+        } else if ($type == 0) {//所有数值>=0
+            $pattern = '/^\d+$/';
+            $compare = $num >= 0;
+        } else {//所有数值为整数
+            $pattern = '/^(?:-)?(?:0|[1-9](?:\d+)?)$/';
+            $compare = true;
+        }
+
+        return preg_match($pattern, $num) && $compare;
+    });
+
+    if ($returnType == 'string') {
+        return implode(',', $result);
+    }
+
+    return $result;
+}
