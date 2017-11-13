@@ -375,13 +375,13 @@ function nlToBr($str){
  * @author:wkj
  * @date  2017/9/14 14:15
  * @param        $str
- * @param int    $type 0 过滤的字符>=0, 1 过滤的字符>=1,-1 过滤的字符为整数
+ * @param int    $type 0 过滤的字符>=0, 1 过滤的字符>=1,-1 过滤的字符为整数,-2过滤非空字符串
  * @param string $returnType
  * @return array|string  string 字符串  array 数组
  */
 function filterStr($str, $type = 1, $returnType = 'string'){
-    if(!is_string($str)){
-        return $returnType == 'string' ? '': array();
+    if (!is_string($str)) {
+        return $returnType == 'string' ? '' : array();
     }
     $arr = explode(',', $str);
     $result = array_filter($arr, function ($num) use ($type){
@@ -391,8 +391,11 @@ function filterStr($str, $type = 1, $returnType = 'string'){
         } else if ($type == 0) {//所有数值>=0
             $pattern = '/^\d+$/';
             $compare = $num >= 0;
-        } else {//所有数值为整数
+        } else if ($type == -1) {//所有数值为整数
             $pattern = '/^(?:-)?(?:0|[1-9](?:\d+)?)$/';
+            $compare = true;
+        } else {//非空字符串
+            $pattern = '/\S/';
             $compare = true;
         }
 
