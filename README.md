@@ -17,5 +17,6 @@
 - jquery validate 校验使用 [jquery-validate](http://git.moyixi.cn/wangkeji/code-snippet/src/master/jq_validate.html)
 - 工作日计算 [工作日计算](http://git.moyixi.cn/wangkeji/code-snippet/src/master/workDayCalc.php)
 - 设计模式学习 [设计模式学习](http://git.moyixi.cn/wangkeji/code-snippet/src/master/patternDesign)
+- js相关 [js常用函数封装,vue学习](http://git.moyixi.cn/wangkeji/code-snippet/src/master/js)
 
 
