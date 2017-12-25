@@ -1,0 +1,387 @@
+@extends('layouts/basic')
+
+{{-- Page title --}}
+@section('title')
+Blank @parent
+@stop
+
+@section('header_styles')
+<link type="text/css" rel="stylesheet" href="{{asset('assets/vendors/datatables/css/dataTables.bootstrap.min.css')}}"/>
+<link type="text/css" rel="stylesheet" href="{{asset('assets/css/pages/dataTables.bootstrap.css')}}"/>
+<link type="text/css" rel="stylesheet" href="{{asset('assets/css/pages/tables.css')}}"/>
+<link type="text/css" rel="stylesheet" href="{{asset('assets/jquery-ui-1.12.1/jquery-ui.min.css')}}">
+<meta name="_token" content="{{ csrf_token() }}"/>
+@stop
+
+{{-- Page content --}}
+@section('content')
+<style>
+    th,td {
+        text-align: center;
+    }
+    table td {vertical-align: middle !important;}
+    .tab{height: 3.75rem;line-height: 3.75rem;text-align: center;cursor: pointer;border-left: 1px solid #c3c3c3 !important}
+    .tab_h{color: green;}
+    .span_redio{margin-right: 1.2rem}
+    label{cursor: pointer;}
+    table tr:nth-child(even){}
+    table tr:nth-child(odd) {background-color:#f4f4f4;}
+    .table-title{text-align: center;font-size: 18px;font-weight:bold;margin-top: 20px;margin-bottom: 10px;}
+
+
+    /*分页样式*/
+    .ivu-page {margin-bottom: 150px;}
+    .ivu-page li {display: inline; padding: 5px 15px;border: 1px solid rgba(0, 0, 0, 0.1);}
+    .ivu-page .ivu-page-item {text-align: center;cursor: pointer;}
+    .ivu-page .ivu-page-prev, .ivu-page .ivu-page-next {text-align: center;display: inline;padding: 5px 15px;border: 1px solid rgba(0, 0, 0, 0.1);}
+    .ivu-page .ivu-page-options {display: inline-block;position: relative;top: 12px;}
+    .ivu-page .ivu-page-item-active {background-color: #80848f;color: #fff}
+    .ivu-page .ivu-page-options .ivu-page-options-sizer {float: left;display: inline-block;width: 100px;}
+    .ivu-page .ivu-page-options .ivu-page-options-elevator {float: left;display: inline-block;}
+    .ivu-page .ivu-page-options .ivu-page-options-elevator input {width: 50px;text-align: center;}
+    .ivu-page .ivu-page-options .ivu-select-selected-value {float: left;display: inline-block;cursor: pointer;}
+    .ivu-page .ivu-page-options .ivu-select-item {float: left;width: 100px;display: block !important;cursor: pointer;}
+    .ivu-page .ivu-page-options .ivu-select-dropdown-list {position: relative;top: 28px;left: -52px;cursor: pointer;}
+    .ivu-page .ivu-page-options .ivu-select-dropdown-list {position: relative;top: 28px;left: -52px;cursor: pointer;}
+    .ivu-page .ivu-page-item-jump-prev {display: inline;padding: 5px 15px;border: 1px solid rgba(0, 0, 0, 0.1);}
+    .ivu-page .ivu-page-item-jump-next {display: inline;padding: 5px 15px;border: 1px solid rgba(0, 0, 0, 0.1);}
+</style>
+<div id="app" class="outer" style="margin-top: 5px">
+    <div class="inner bg-light lter bg-container">
+        <div class="card">
+            <div class="card-block m-t-15">
+                <form class="form-horizontal m-t-35" id="queryForm">
+                    <fieldset>
+                        <div class="form-group row">
+                            <div class="col-lg-2 col-xl-2 text-lg-right">
+                                <label for="" class="col-form-label">报名时间:</label>
+                            </div>
+                            <div class="col-lg-6 col-xl-6 row">
+                                <input type="date"  class="form-control col-lg-4" v-model="enroll_start_date" placeholder="日期">
+                                <span style="padding: 0 0.2em">-</span>
+                                <input  type="date"   class=" form-control col-lg-4" v-model="enroll_end_date" placeholder="日期">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-2 col-xl-2 text-lg-right">
+                                <label for="" class="col-form-label">会员状态:</label>
+                            </div>
+                            <div class="col-lg-4 col-xl-4 row">
+                                <select class="form-control col-lg-5 col-md-5 col-xs-5 " v-model="mem_status">
+                                    <option value="0">-- 请选择 --</option>
+                                    @foreach (Conf::getPlain('member.member_status') as $key => $value)
+                                    <option value="{{$key}}">{{$value}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-2 col-xl-2 text-lg-right">
+                                <label for="" class="col-form-label">回访时间:</label>
+                            </div>
+                            <div class="col-lg-6 col-xl-6 row">
+                                <input type="date"   class="form-control col-lg-4" v-model="visit_start_date" placeholder="日期">
+                                <span   style="padding: 0 0.2em">-</span>
+                                <input  type="date"    class=" form-control col-lg-4" v-model="visit_end_date" placeholder="日期">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-2 col-xl-2 text-lg-right">
+                                <label for="" class="col-form-label">电话号码:</label>
+                            </div>
+                            <div class="col-lg-4 col-xl-4 row">
+                                <select class="form-control col-lg-5 col-md-5 col-xs-5 " v-model="phone_type">
+                                    <option value="0">-- 请选择 --</option>
+                                    @foreach (Conf::getPlain('member.phone_type') as $key => $value)
+                                    <option value="{{$key}}">{{$value}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-xl-2 row" style="margin-left: -17.5%">
+                                <div class="input-group" style="padding: 0">
+                                    <input class="form-control" v-model.trim="phone"    type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-2 col-xl-2 text-lg-right">
+                                <label for="" class="col-form-label">回访客服:</label>
+                            </div>
+                            <div class="col-lg-9 col-xl-4 row">
+                                <div class="input-group" style="padding: 0">
+                                    <input class="form-control"   placeholder="回访客服"  v-model="kf_name" type="text">
+                                    <input name="kfid" value="" type="hidden" v-model="kf_id">
+                                    {{--<span class="input-group-addon"><i class="fa fa-search"></i></span>--}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-2 col-xl-2 text-lg-right">
+                                <label for="" class="col-form-label">条口添加时间:</label>
+                            </div>
+                            <div class="col-lg-6 col-xl-6 row">
+                                <input type="date"  class="form-control col-lg-4" v-model="add_start_time" placeholder="日期">
+                                <span  style="padding: 0 0.2em">-</span>
+                                <input type="date"  class=" form-control col-lg-4" v-model="add_end_time" placeholder="日期">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <div class="col-lg-2 col-xl-2 text-lg-right">
+                                <label for="password4" class="col-form-label">回访结果:</label>
+                            </div>
+                            <div class="col-lg-5 col-xl-5">
+                                @foreach (Conf::getPlain('member.visit_result') as $key => $value)
+                                <div class="col-lg-12" style="padding: 0">
+                                    @if (isset($value['info']))
+                                    <label class="col-form-label">
+                                        <input @change="join_visit_vret_change({{$key}})" id="vret{{$key}}" type="checkbox" v-model="join_visit_vret" name="join_visit_vret[]" value="{{$key}}" {{ in_array($key, (array)old('join_visit_vret')) ? 'checked' : '' }}/><span>{{$value['info']}}</span>
+                                    </label>
+                                    @foreach ($value['detail'] as $k => $v)
+                                    <label class="col-form-label" style="margin-left: 15px">
+                                        <input @change="join_visit_vret_change({{$k}})" class="vret{{$key}}" v-model="join_visit_vret" type="checkbox" name="join_visit_vret[]" value="{{$k}}" {{ in_array($k, (array)old('join_visit_vret')) ? 'checked' : '' }}/><span>{{$v}}</span>
+                                    </label>
+                                    @endforeach
+                                    @else
+                                    <label class="col-form-label">
+                                        <input @change="join_visit_vret_change({{$key}})" type="checkbox" v-model="join_visit_vret" name="join_visit_vret[]" value="{{$key}}" {{ in_array($key, (array)old('join_visit_vret')) ? 'checked' : '' }}/><span>{{$value}}</span>
+                                    </label>
+                                    @endif
+                                </div>
+                                @endforeach
+                            </div>
+
+                            {{--回放结果--}}
+                            <div class="col-lg-1 col-xl-1 text-lg-right">
+                                <label for="" class="col-form-label">活动名称:</label>
+                            </div>
+                            <div class="col-lg-9 col-xl-4 row">
+                                <div class="input-group" style="padding: 0">
+                                    <input style="height: 35px" class="form-control" v-model.trim="activity_name" readonly  placeholder="活动名称"  type="text">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-lg-5 col-xl-5 text-lg-right">
+                                <input @click="search" class="btn btn-primary layout_btn_prevent" type="button" style="width: 180px" value="查询">
+                                <input @click="resetSettings" class="btn btn-warning layout_btn_prevent" value="重置" type="button" style="width: 180px"  >
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div>
+            <div class="card data_tables m-t-15" style="display: block;">
+                <div class="card-header bg-white">
+                    <i class="fa fa-table"></i> 查询结果 共<font v-text="total"></font>条
+                </div>
+                <div class="card-block m-t-15">
+                    <table class="display table table-stripped table-bordered">
+                        <tr>
+                            <th>序号</th>
+                            <th>姓名</th>
+                            <th>报名时间</th>
+                            <th>会员状态</th>
+                            <th>回访状态</th>
+                            <th>回访结果</th>
+                            <th>第一来源人</th>
+                            <th>操作</th>
+                        </tr>
+                        <tr v-for="item in lists">
+                            <td v-text="item.show_id">序号</td>
+                            <td v-text="item.mem_name">姓名</td>
+                            <td v-text="item.join_date">报名时间</td>
+                            <td v-text="item.status_name">会员状态</td>
+                            <td v-text="item.visit_status_name">回访状态</td>
+                            <td v-text="item.join_visit_vret_name">回访结果</td>
+                            <td v-text="item.first_name">第一来源人</td>
+                            <td v-html="redirectMem(item.memid)">操作</td>
+                        </tr>
+
+                    </table>
+                    <Pages v-show="total">
+                        <Page  :total="total"  :page-size="pageSize" :page-size-opts="pageSizeOpts" show-sizer show-elevator @on-change="pageChange" @on-page-size-change="pageSizeChange" ></Page>
+                    </Pages>
+                </div>
+            </div>
+        </div>
+    </div>
+    @stop
+
+    @section('footer_scripts')
+
+    <script src="{{asset('assets/js/vue.min.js')}}"></script>
+    <script src="{{asset('assets/iview/iview.min.js')}}"></script>
+    <script src="{{asset('assets/js/axios-0.17.1.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('assets/jquery-ui-1.12.1/jquery-ui.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('assets/vendors/datatables/js/jquery.dataTables.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('assets/My97DatePicker/WdatePicker.js')}}"></script>
+    <script type="text/javascript" src="{{asset('assets/vendors/datatables/js/dataTables.bootstrap.min.js')}}"></script>
+    <script>
+        var vm = new Vue({
+            'el': '#app',
+            data: {
+                api: "{{url('Report/join_sea')}}",
+                enroll_start_date: '{{$date}}',
+                enroll_end_date: '{{$date}}',
+                end_date_show: true,
+                mem_status: 0,
+                visit_start_date: '',
+                visit_end_date: '',
+                phone_type: 0,
+                phone: '',
+                kf_name: '',
+                kf_id: 0,
+                add_start_time: '',
+                add_end_time: '',
+                join_visit_vret:[],
+                pageType:'{{$pageType}}',
+                type: 4,
+                suffix: {'date': '', 'portal': ''},
+                lists: [],
+                activity_id: '{{$activity_id}}',
+                activity_name: '{{$activity_name}}',
+                pageSizeOpts: [10, 20, 50, 100],
+                curPage: 1,
+                pageSize: 20,
+                total: 0,
+                importType: 0,
+                importAdmin: 0,
+                visit_result: {{$visit_result}},
+        },
+        mounted: function () {
+            this.$nextTick(function () {
+                this.search();
+            })
+        },
+        watch: {
+            type: function () {
+                this.end_date_show = (this.type == 4)
+            },
+            lpName: function () {
+                if (this.lpName.length == 0) {
+                    this.lpid = '';
+                }
+            },
+            begin_time: function () {
+                if (this.begin_time.length == 0) {
+                    this.begin_time = '{{$date}}';
+                }
+            },
+            showType: function () {
+                this.lists = [];
+                this.total = 0;
+                this.curPage = 1;
+                this.search();
+            },
+            curPage:function(){
+                this.search();
+            },
+            pageSize:function(){
+                this.search();
+            },
+        },
+        methods: {
+            search: function () {
+                axios.post(this.api, {
+                    "query": [
+                        {"name": "page", "value": vm.curPage},
+                        {"name": "pageSize", "value": vm.pageSize},
+                        {"name": "pageType", "value": vm.pageType},
+                        {"name": "activity_id", "value": vm.activity_id},
+                        {"name": "join_dateline[]", "value": [vm.enroll_start_date, vm.enroll_end_date ]},
+                        {"name": "join_visit_time[]", "value": [vm.visit_start_date, vm.visit_end_date ]},
+                        {"name": "addtime{{$portal_id}}[]", "value": [vm.add_start_time, vm.add_end_time ]},
+                        {"name": "join_visit_vret[]", "value": vm.join_visit_vret},
+                        {"name": "join_visit_user", "value": vm.kf_name},
+                        {"name": "join_memphone", "value": vm.phone},
+                        {"name": "join_phonetype", "value": vm.phone_type},
+                        {"name": "status", "value": vm.mem_status},
+                    ],
+                    'pageType':vm.pageType
+                }).then(function (response) {
+                    vm.lists = response.data.lists;
+                    vm.suffix = response.data.suffix;
+                    vm.total = response.data.total;
+                });
+            },
+            resetSettings: function () {
+                this.begin_time = '{{$date}}';
+                this.end_time = '{{$date}}';
+            },
+            getRatio: function (data) {
+                var mark = data.mark;
+                var ratio = data.ratio;
+                if (mark == '-' || mark == '+') {
+                    return '<font color="' + (mark == '-' ? 'green' : 'red') + '">' + mark + ratio + '%</font>'
+                } else {
+                    return mark;
+                }
+            },
+            makeUrl: function (num, activity_id, type) {
+                return '<a  style="color: #668cff" href="' + this.api + '?pageType=' + type + '&activity_id=' + activity_id + '">' + num + '</a>';
+            },
+            pageChange:function(page){
+                this.curPage = page;
+            },
+            pageSizeChange:function(size){
+                this.pageSize = size;
+            },
+            join_visit_vret_change: function (value) {
+                //单选与全选逻辑处理
+                var is_checked = this.in_array(value, this.join_visit_vret)
+                if (is_checked) {//选中的情况下
+                    if (value < 10) {
+                        //单位数,全选
+                        for (var i = 1; i < 10; i++) {
+                            this.join_visit_vret.push(value * 10 + i + '')
+                        }
+                    }
+                } else {//非选中的情况下
+                    if (value < 10) {
+                        for (var k = value * 10; k < value * 10 + 10; k++) {
+                            for (var i = 0; i < this.join_visit_vret.length; i++) {
+                                if (this.join_visit_vret[i] == k + '') {
+                                    delete this.join_visit_vret[i];
+                                }
+                            }
+                        }
+                    }
+                }
+                var tmp = [];
+                for (var i = 0; i < this.join_visit_vret.length; i++) {
+                    //过滤空数据,无效数据
+                    if (this.join_visit_vret[i] && this.in_array(this.join_visit_vret[i], this.visit_result)) {
+                        tmp.push(this.join_visit_vret[i]);
+                    }
+                }
+                //去重处理
+                this.join_visit_vret = this.array_unique(tmp);
+            },
+            in_array: function (needle, array) {
+                for (var i = 0; i < array.length; i++) {
+                    if (array[i] == needle) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            array_unique: function (array) {
+                var unique = [];
+                for (var i = 0; i < array.length; i++) {
+                    if (unique.indexOf(array[i]) < 0) {
+                        unique.push(array[i]);
+                    }
+                }
+                return unique;
+            },
+            redirectMem: function (memid) {
+                return '<a  class="btn btn-info" target="_blank" href="{{url('xx/update')}}/'+memid+'">视图</a>'
+            }
+        },
+        })
+    </script>
+    @stop
