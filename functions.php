@@ -228,6 +228,24 @@ function get_zodiac_sign($month, $day){
     return $sign_name;
 }
 
+/**
+ *  字符串长度截取替换
+ * @author:wkj
+ * @date  2018/1/10 16:33
+ * @param        $string
+ * @param        $length
+ * @param string $replacement
+ * @return mixed
+ */
+function textLimit($string, $length, $replacement = '...'){
+    $strLen = strlen($string);
+    if ($strLen > $length) {
+        $string = substr_replace($string, $replacement, $length, $strLen);
+    }
+
+    return $string;
+}
+
 /*
 @Func:按字符截取字符串(utf8)
 @Auth:wkj
