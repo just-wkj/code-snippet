@@ -238,13 +238,14 @@ function get_zodiac_sign($month, $day){
  * @return mixed
  */
 function textLimit($string, $length, $replacement = '...'){
-    $strLen = strlen($string);
-    if ($strLen > $length) {
-        $string = substr_replace($string, $replacement, $length, $strLen);
+    if (mb_strlen($string) > $length) {
+        $string = msubstr_just($string, 0, $length) . $replacement;
     }
 
     return $string;
 }
+
+
 
 /*
 @Func:按字符截取字符串(utf8)
