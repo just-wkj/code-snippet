@@ -54,7 +54,8 @@ func parallelRequest(pnum int, websites []string) { // 并行抓取
 	close(doneChans)                                            // 关闭完成信号
 	close(execChans)                                            // 关闭执行信号
 	processed := float32(time.Now().UnixNano()-startTime) / 1e9 // 统计总耗时
-	log.Printf("全部完成，并发数量：%d, 共耗时：%.3fs", pnum, processed)
+	perNum := float32(pnum)/float32(processed)
+	log.Printf("全部完成，并发数量：%d, 共耗时：%.3fs, 每秒请求数: %.3f ", pnum, processed, perNum)
 	//log.Printf("data: %q", fetchData)
 }
 
