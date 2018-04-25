@@ -7,12 +7,13 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"runtime"
 )
 
 var websites []string
 
 func main() {
-	//runtime.GOMAXPROCS(4)
+	runtime.GOMAXPROCS(runtime.NumCPU())
 	num := flag.Int("num", 0, "num")
 	url := flag.String("url", "", "http url")
 	flag.Parse()

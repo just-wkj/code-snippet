@@ -1,0 +1,13 @@
+awk 'BEGIN{print "array("}{printf "\"%s\" => \"%s\",\n", $1,$10}END{print")"}' awk.txt
+awk -v FS="@@" -v OFS='##' '{print $1,$2}' log.txt
+
+grep sendCode xxx.txt > 123.log
+awk -v FS='"' '{print $8}' 123.log  > ip.txt
+
+$ awk -v FS='"' '{print $8}' 123.log  | sort $1|uniq
+
+uniq 去重
+sort -r 倒序
+
+查看文件 json格式化
+tail -n 2 20170920_upload.log| head -n 2 |awk -v FS='\t' '{print $2}' | jq 
