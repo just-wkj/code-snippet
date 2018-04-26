@@ -1,0 +1,17 @@
+个人常用alias
+
+alias host='cd /c/Windows/System32/drivers/etc;ls host*'
+alias hosts='vim /c/Windows/System32/drivers/etc/hosts'
+alias rep='cd /d/gitrepo'
+alias grep='grep --color=auto'
+alias npmmv='npm run build && php mv.php'
+alias aznLog="awk  -v FS='###' -v OFS='\n' '{print \$1,\$3,\$11,\$10,\$13,\$14,\"\n\"}' > out.txt"
+alias getLog="curl -O https://DOMAIN.com/PATH/DIR/$(date +%Y%m%d%H).log"
+alias catLog="cat $(date +%Y%m%d%H).log"
+alias ssh118="ssh root@118.31.39.104 -p 3333"
+alias sshlizhan="ssh root@119.3.243.4"
+alias aznPostMan="cd /c/Users/365/Desktop/awk;php postman.php"
+alias socketlog="socketlog-server > /dev/null &"
+alias mdserver="cd ~/Desktop/md/;nohup php -S 0.0.0.0:7777> /dev/null &"
+alias sshhui="ssh root@121.196.210.120"
+alias gengxin="ssh root@121.196.210.120 '/bin/sh /jobs/manager.sh'"
