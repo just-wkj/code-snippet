@@ -72,16 +72,18 @@ if (!function_exists('p')) {
      * @param string $data
      * @param int    $is_die
      */
-    function p($data = 'godie', $is_die = 1){
-        $data === 'godie' && die();
+    function p($data = array()){
         echo "<pre>";
-        if (is_bool($data)) {
-            var_dump($data);
-        } else {
-            print_r($data);
+        foreach (func_get_args() as $variable) {
+            if (is_bool($variable)) {
+                var_dump($variable);
+            } else {
+                print_r($variable);
+            }
+            echo "\r\n";
         }
-        echo "</pre>";
-        $is_die && die();
+        echo "</pre>\r\n";
+        die;
     }
 }
 
@@ -426,4 +428,21 @@ function filterStr($str, $type = 1, $returnType = 'string'){
     }
 
     return $result;
+}
+
+/**
+ *  添加错误提示
+ * @author:wkj
+ * @date 2018/5/4 13:57
+ * @param        $msg
+ * @param string $url
+ * @param int    $is_die
+ */
+function errMessage($msg, $url = '-1', $is_die = 1){
+    if ($url == -1) {
+        echo "<script>alert('$msg');history.go(-1);</script>";
+    } else {
+        echo "<script>alert('$msg');location.href='$url';</script>";
+    }
+    $is_die && die();
 }
