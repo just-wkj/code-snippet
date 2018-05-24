@@ -43,7 +43,18 @@ var justJs = {
             var y = b[key];
             return desc ? ((x < y) ? ((x > y) ? 0 : 1) : -1) : ((x < y) ? -1 : ((x > y) ? 1 : 0));
         });
-    }
+    },
+	//js 时间设置
+	 jsDate(time) {
+			var date = new Date(parseInt(time) * 1000);
+			var Y = date.getFullYear();
+			var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+			var D = date.getDate();
+			var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
+			var m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+			var s = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+			return Y + '-' + M + '-' + D + ' ' + h + ':' + m + ':' + s;
+		}
 }
 
 //使用实例如下
