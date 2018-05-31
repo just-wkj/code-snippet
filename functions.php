@@ -446,3 +446,36 @@ function errMessage($msg, $url = '-1', $is_die = 1){
     }
     $is_die && die();
 }
+
+
+function getLastMonthDay($timestamp = null, $returnStamp = 1){
+    if (!$timestamp) {
+        $timestamp = time();
+    }
+    $lastTime = strtotime("-1 month", $timestamp);
+    if (date('m', $lastTime) == date('m', $timestamp)) {
+        $lastTime = strtotime(date('Y-m-t', strtotime("-1 month", $lastTime)));
+    }
+
+    return $returnStamp ? $lastTime : date('Y-m-d', $lastTime);
+}
+
+function getLastMonth($timestamp = null, $returnStamp = 1){
+    if (!$timestamp) {
+        $timestamp = time();
+    }
+    $currentMonth = date('Y-m-01', $timestamp);
+    $lastMonthStartTime = strtotime("$currentMonth -1 month");
+    $lastMonthEndTime = strtotime(date('Y-m-t', $lastMonthStartTime)) + 86399;
+    if ($returnStamp) {
+        return [
+            $lastMonthStartTime,
+            $lastMonthEndTime
+        ];
+    }
+
+    return [
+        date('Y-m-d', $lastMonthStartTime),
+        date('Y-m-d', $lastMonthEndTime),
+    ];
+}
