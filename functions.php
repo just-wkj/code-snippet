@@ -448,7 +448,15 @@ function errMessage($msg, $url = '-1', $is_die = 1){
 }
 
 
-function getLastMonthDay($timestamp = null, $returnStamp = 1){
+/**
+ *  上个月的当天,如果不存在则为上个月的最后一天
+ * @author:wkj
+ * @date 2018/5/31 10:40
+ * @param null $timestamp
+ * @param int  $returnStamp
+ * @return false|int|string
+ */
+function getLastMonthDay($timestamp = null, $returnStamp = 0){
     if (!$timestamp) {
         $timestamp = time();
     }
@@ -460,7 +468,15 @@ function getLastMonthDay($timestamp = null, $returnStamp = 1){
     return $returnStamp ? $lastTime : date('Y-m-d', $lastTime);
 }
 
-function getLastMonth($timestamp = null, $returnStamp = 1){
+/**
+ *  上个月的开始和结束日期
+ * @author:wkj
+ * @date 2018/5/31 10:40
+ * @param null $timestamp
+ * @param int  $returnStamp
+ * @return array
+ */
+function getLastMonth($timestamp = null, $returnStamp = 0){
     if (!$timestamp) {
         $timestamp = time();
     }
@@ -479,3 +495,34 @@ function getLastMonth($timestamp = null, $returnStamp = 1){
         date('Y-m-d', $lastMonthEndTime),
     ];
 }
+
+
+/**
+ *  获取某个月份开始和结束时间
+ * @author:wkj
+ * @date 2018/5/31 10:53
+ * @param null   $timestamp
+ * @param string $operator  操作符 eg: -1 0 +2
+ * @param int    $returnStamp
+ * @return array
+ */
+function getMonth($timestamp = null, $operator='0', $returnStamp = 0){
+    if (!$timestamp) {
+        $timestamp = time();
+    }
+    $currentMonth = date('Y-m-01', $timestamp);
+    $lastMonthStartTime = strtotime("$currentMonth $operator month");
+    $lastMonthEndTime = strtotime(date('Y-m-t', $lastMonthStartTime)) + 86399;
+    if ($returnStamp) {
+        return [
+            $lastMonthStartTime,
+            $lastMonthEndTime
+        ];
+    }
+
+    return [
+        date('Y-m-d', $lastMonthStartTime),
+        date('Y-m-d', $lastMonthEndTime),
+    ];
+}
+
