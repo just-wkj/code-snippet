@@ -98,6 +98,50 @@ class Curl{
     }
 
     /**
+     *  postJosn出具处理
+     * @author:wkj
+     * @date 2018/7/11 10:54
+     * @param       $url
+     * @param array $post
+     * @param array $headers
+     * @param int   $timeOut
+     * @return mixed
+     */
+    public static function postJson($url, array $post = array(), $headers = array(), $timeOut = 10){
+        $defaults = array(
+            CURLOPT_POST           => 1,
+            CURLOPT_HEADER         => 0,
+            CURLOPT_URL            => $url,
+            CURLOPT_FRESH_CONNECT  => 1,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_FORBID_REUSE   => 1,
+            CURLOPT_TIMEOUT        => $timeOut,
+            CURLOPT_POSTFIELDS     => json_encode($post)
+        );
+
+        $ch = curl_init();
+        curl_setopt_array($ch, $defaults);
+        if ($headers) {
+            $_header = array();
+            foreach ($headers as $key => $vo) {
+                $_header[] = $key . ':' . $vo;
+            }
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $_header);
+        }
+        if (stripos($url, "https://") !== false) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_SSLVERSION, 1);
+        }
+        if (!$result = curl_exec($ch)) {
+            trigger_error(curl_error($ch));
+        }
+        curl_close($ch);
+
+        return $result;
+    }
+
+    /**
      *  get请求针对接口json数据处理为数组
      * @author:wkj
      * @date  2017/6/1 14:49
