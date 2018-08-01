@@ -25,3 +25,9 @@ GROUP BY DATE
 * 复制表
 *  insert into crm_activity_copy (select * from newcrm.crm_activity);
 * */
+// 直接根据日期搜索 某段时间内根据日期统计数量
+SELECT DATE_FORMAT( FROM_UNIXTIME( add_time ) ,  '%Y-%m-%d' ) AS date, COUNT( * ) AS total
+FROM  `tableName`
+WHERE add_time >=UNIX_TIMESTAMP('2018-07-1')
+AND add_time <UNIX_TIMESTAMP('2018-08-1')
+GROUP BY DATE_FORMAT( FROM_UNIXTIME( add_time ) ,  '%Y-%m-%d' )
