@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script>
+    function sum1(a, b,c){
+        return a+b+c;
+    }
+    var sum = sum1(1,2,3)
+    console.log(`sum1 = ${sum}`)
+    function sum2(...param){
+        var total = 0;
+        for (var i of param){
+            total += i
+        }
+        return total
+    }
+    var sum = sum2(1,2,3,4)
+    console.log(`sum2 = ${sum}`)
+
+    var sum3 = (...param) => {
+        var total = 0;
+        for (var i of param){
+            total += i
+        }
+        return total
+    }
+    var sum = sum3(1,2,3,4,5)
+    console.log(`sum3 = ${sum}`)
+    var a = [1,2,34]
+    // [x,y,z] = [1,2,34]
+
+    var next = () => {
+        return new Promise((resolve, reject) => {
+            let userInfo = {
+                name:'小明',
+                userId:1101
+            }
+            resolve(userInfo)
+        })
+    }
+
+    var testPromise = ()=>{
+        return  new Promise((resolve, reject) => {
+            var rd = Math.ceil(Math.random()*10)
+            rd = 1
+            if(rd <= 5 ){
+            resolve({
+                status:0,
+                lists: [1,2,3]
+            })
+        }
+
+        //报错
+        reject("errxx")
+    })
+    }
+
+    testPromise().then((res)=>{
+        console.log(res.lists)
+    console.log('next')
+    return next()
+    }).catch((err)=>{
+        console.log(err)
+    }).then(res =>{
+        console.log(`name=${res.name} userid=${res.userId}`)
+    })
+
+
+    Promise.all([testPromise(), next()]).then(([res1, res2])=>{
+        console.log(res1)
+        console.log(res2)
+    })
+
+
+
+</script>
+</body>
+</html>
