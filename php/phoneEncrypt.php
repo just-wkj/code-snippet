@@ -50,7 +50,7 @@ class JustEncrypt{
         array_shift($numArr); //剔除第一位
         array_pop($numArr); //剔除最后一位
         $result[] = 1;//第一位手机号都是默认 1
-        $salt = array_shift($numArr); //去除加密salt
+        $salt = array_shift($numArr); //取出加密salt
         foreach ($numArr as $key => $vo) {
             $sum = 20 + $vo - $key - 2 - $salt;
             $sum = substr($sum, -1, 1);
